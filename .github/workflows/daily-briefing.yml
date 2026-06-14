@@ -1,0 +1,47 @@
+name: Daily AI Briefing
+
+on:
+  schedule:
+    # 07:30 KST = 22:30 UTC (전날)
+    - cron: "30 22 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  send-briefing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Prepare Telegram/Kakao config from secrets
+        env:
+          BRIEFING_CHANNEL: ${{ secrets.BRIEFING_CHANNEL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          KAKAO_REFRESH_TOKEN: ${{ secrets.KAKAO_REFRESH_TOKEN }}
+          KAKAO_ACCESS_TOKEN: ${{ secrets.KAKAO_ACCESS_TOKEN }}
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+        run: python scripts/prepare_github_env.py
+
+      - name: Send today's briefing
+        env:
+          BRIEFING_CHANNEL: ${{ secrets.BRIEFING_CHANNEL }}
+        run: python scripts/run_scheduled_briefing.py
+
+      - name: Save rotation state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/state.json
+          git diff --staged --quiet || git commit -m "chore: briefing state after daily send"
+          git push
