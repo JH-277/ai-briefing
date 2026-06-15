@@ -33,15 +33,17 @@ jobs:
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
         run: python scripts/prepare_github_env.py
 
-      - name: Send today's briefing
+      - name: Generate and send daily briefing
         env:
           BRIEFING_CHANNEL: ${{ secrets.BRIEFING_CHANNEL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
         run: python scripts/run_scheduled_briefing.py
 
-      - name: Save rotation state
+      - name: Save curriculum state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/state.json
-          git diff --staged --quiet || git commit -m "chore: briefing state after daily send"
+          git diff --staged --quiet || git commit -m "chore: curriculum state after daily briefing"
           git push
