@@ -1,125 +1,105 @@
-# AI 개념 자동 브리핑
+# AI Daily Coach
 
-비전공자용 AI 숏츠 브리핑을 **매일 07:30** 자동 전송.  
-**PC·Cursor 불필요** — GitHub Actions + **100% 무료**.
-
-**전송 채널:** **Telegram 권장** (완전 자동화) · Kakao 선택 가능
-
----
-
-## Kakao vs Telegram (추천)
-
-| | **Telegram** ⭐ 권장 | **Kakao** |
-|---|---------------------|-----------|
-| **완전 자동화** | ✅ 봇 토큰 **만료 거의 없음** | ⚠️ 2~3개월마다 **토큰 재발급** → GitHub Secrets 수정 |
-| **GitHub 연동** | ✅ API 1줄, 설정 **5분** | ✅ 가능 (이미 구현) |
-| **한국 일상 편의** | 보통 씀 | **매일 쓰는 앱** |
-| **보안** | Secrets 유출 시 **내 봇 채팅**으로만 전송 가능 | Secrets 유출 시 **내 카톡**으로 전송 |
-| **추가 Q&A (나중에)** | ✅ 봇 **양방향** 쉬움 | ❌ 나에게 보내기만 (일방향) |
-| **비용** | 무료 | 무료 쿼터 |
-
-**결론:** GitHub **무인 7:30** → **Telegram**. 카톡이 익숙하면 `both` 가능.
+비전공 실무자용 **AI 학습 코치** — 매일 **07:30 KST** Telegram 자동 발송.  
+**Gemini**가 RSS 뉴스 + 3개월 커리큘럼 기반으로 **매일 새 브리핑** 생성.  
+PC·Cursor 불필요 — **GitHub Actions**.
 
 ---
 
-## A. Telegram 설정 (5분, 1회)
+## 아키텍처 (MVP)
 
-### 1) 봇 만들기
+```
+07:30 GitHub Actions
+  → RSS 뉴스 수집 (fetch_ai_news.py)
+  → 커리큘럼 다음 개념 (curriculum_manager.py)
+  → Gemini 생성 (generate_daily_briefing.py)
+  → Telegram 전송
+  → state.json commit (진도 저장)
+```
 
-1. 텔레그램에서 **@BotFather** 검색  
-2. `/newbot` → 이름·username 입력  
-3. **bot token** 복사 (예: `7123456789:AAH...`)
+| 파일 | 역할 |
+|------|------|
+| `data/curriculum.json` | 3개월·36개 개념 로드맵 |
+| `data/state.json` | 진도·중복 방지 |
+| `prompts/daily_coach.md` | Gemini 프롬프트 |
+| `.github/workflows/daily-briefing.yml` | 스케줄 |
 
-### 2) chat_id 받기
+---
+
+## 1. Gemini API 키 (1회)
+
+1. [Google AI Studio](https://aistudio.google.com/apikey) → **Create API key**
+2. 로컬:
 
 ```powershell
 cd "C:\Users\pyww2\Desktop\cursor\AI개념"
-Copy-Item config\telegram.example.json config\telegram.json
-# notepad config\telegram.json  → bot_token 붙여넣기
-python scripts/get_telegram_chat_id.py
+Copy-Item config\gemini.example.json config\gemini.json
+# notepad config\gemini.json → api_key 붙여넣기
 ```
 
-봇에게 `/start` 보낸 뒤 스크립트 실행 → `chat_id` 자동 저장.
+3. GitHub Secrets: **`GEMINI_API_KEY`** (필수)
 
-### 3) 테스트
+---
+
+## 2. Telegram (1회)
 
 ```powershell
+Copy-Item config\telegram.example.json config\telegram.json
+# bot_token 저장 후
+python scripts/get_telegram_chat_id.py
 python scripts/send_telegram.py --text "연결 테스트"
 ```
 
+GitHub Secrets: `BRIEFING_CHANNEL=telegram`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
+
 ---
 
-## B. GitHub Actions (노트북 OFF)
-
-### 1) GitHub에 코드 올리기
-
-**방법 1 — Git 설치됨**
-
-```powershell
-cd "C:\Users\pyww2\Desktop\cursor\AI개념"
-git init
-git add .
-git commit -m "AI briefing automation"
-git remote add origin https://github.com/YOUR_ID/ai-briefing.git
-git push -u origin main
-```
-
-**방법 2 — Git 없음**  
-[github.com/new](https://github.com/new) → 저장소 생성 → **Add file → Upload files** → `AI개념` 폴더 전체 업로드  
-(`config/kakao.json`, `config/telegram.json` 은 **올리지 마세요**)
-
-### 2) Secrets 등록
+## 3. GitHub Secrets
 
 ```powershell
 python scripts/print_github_secrets.py
 ```
 
-GitHub → **Settings → Secrets → Actions**
-
 | Secret | 값 |
 |--------|-----|
-| `BRIEFING_CHANNEL` | `telegram` (또는 `kakao` / `both`) |
+| `BRIEFING_CHANNEL` | `telegram` |
+| `GEMINI_API_KEY` | Google AI Studio |
 | `TELEGRAM_BOT_TOKEN` | telegram.json |
 | `TELEGRAM_CHAT_ID` | telegram.json |
-| `KAKAO_*` | kakao 사용 시만 |
+| `GEMINI_MODEL` | (선택) `gemini-2.0-flash` |
 
-### 3) Actions 권한
-
-**Settings → Actions → Workflow permissions** → **Read and write** → Save
-
-### 4) 수동 테스트
-
-**Actions → Daily AI Briefing → Run workflow**
-
-성공 후 **매일 07:30 KST** 자동.
+**Settings → Actions → Workflow permissions → Read and write**
 
 ---
 
-## C. Kakao만 쓸 때 (선택)
-
-이미 설정했다면 Secrets에 `BRIEFING_CHANNEL` = `kakao` + Kakao Secrets.  
-**2~3개월마다** `kakao_auth.py` 재로그인 → `KAKAO_REFRESH_TOKEN` Secrets 업데이트.
-
----
-
-## 콘텐츠
-
-- **10편** 숏츠형: `content/library/`
-- **후보 주제:** `data/topic_backlog.json`
-- **가이드:** `prompts/clip_format.md`
-
----
-
-## 로컬 1회 테스트
+## 4. 테스트
 
 ```powershell
+# 로컬 전체 파이프라인 (Gemini + Telegram)
 python scripts/run_scheduled_briefing.py
 ```
 
-`config/settings.json` → `"delivery_channel": "telegram"`
+GitHub: **Actions → Daily AI Briefing → Run workflow**
+
+---
+
+## 브리핑 구성 (매일 1통)
+
+1. **오늘의 AI 뉴스** (RSS 2건)
+2. **오늘의 AI 개념** (커리큘럼)
+3. **AX 실무** (재무·SAP·결산 관점)
+4. **Agent 아이디어** (1개)
 
 ---
 
 ## 비용
 
-GitHub Actions + Telegram + (선택) Kakao = **0원** (일 1회 기준)
+- GitHub Actions + Telegram: **0원**
+- Gemini: **무료 한도** (1일 1회 기준 일반적으로 가능)
+
+---
+
+## 레거시
+
+- `content/library/` — 이전 고정 원고 (MVP 이후 미사용)
+- `data/topics.json` — 이전 순환 방식

@@ -1,4 +1,4 @@
-"""저장된 브리핑을 순환 전송 (Telegram / Kakao / 둘 다)."""
+"""Gemini 생성 → Telegram/Kakao 전송 → 커리큘럼 진도 갱신."""
 
 from __future__ import annotations
 
@@ -6,12 +6,9 @@ import json
 import os
 import subprocess
 import sys
-from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-LIBRARY = ROOT / "content" / "library"
-BRIEFINGS = ROOT / "briefings"
 SETTINGS = ROOT / "config" / "settings.json"
 ENV = {**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"}
 
@@ -40,35 +37,45 @@ def delivery_channel() -> str:
     return "telegram"
 
 
-def send_briefing(archive: Path, title: str, channel: str) -> None:
-    rel = str(archive.relative_to(ROOT))
+def send_briefing(archive_rel: str, title: str, channel: str) -> None:
     if channel in ("telegram", "both"):
-        run_script("send_telegram.py", "--file", rel, "--title", title)
+        run_script(
+            "send_telegram.py",
+            "--file",
+            archive_rel,
+            "--title",
+            f"AI Daily Coach — {title}",
+        )
     if channel in ("kakao", "both"):
-        run_script("send_kakao.py", "--file", rel, "--title", title)
+        run_script(
+            "send_kakao.py",
+            "--file",
+            archive_rel,
+            "--title",
+            f"AI Daily Coach — {title}",
+        )
 
 
 def main() -> None:
     channel = delivery_channel()
-    topic = json.loads(run_script("topic_manager.py", "next"))
-    topic_id = topic["id"]
-    title = topic["title"]
-
-    source = LIBRARY / f"{topic_id}.md"
-    if not source.exists():
-        raise SystemExit(f"브리핑 없음: {source}")
-
-    today = date.today().isoformat()
-    archive = BRIEFINGS / f"{topic_id}-{today}.md"
-    BRIEFINGS.mkdir(parents=True, exist_ok=True)
-    archive.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+    meta = json.loads(run_script("generate_daily_briefing.py"))
+    concept_id = meta["concept_id"]
+    title = meta["title"]
+    archive = meta["archive"]
 
     send_briefing(archive, title, channel)
-    run_script("topic_manager.py", "complete", topic_id)
+    run_script("curriculum_manager.py", "complete", concept_id)
 
     print(
         json.dumps(
-            {"ok": True, "topic_id": topic_id, "title": title, "channel": channel},
+            {
+                "ok": True,
+                "mode": "daily_coach",
+                "concept_id": concept_id,
+                "title": title,
+                "channel": channel,
+                "archive": archive,
+            },
             ensure_ascii=False,
         )
     )

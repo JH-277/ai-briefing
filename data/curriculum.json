@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "title": "AI Daily Coach — 3개월 로드맵",
+  "path": "AI 기초 → LLM·Prompt → API → RAG → Agent → MCP → Multi-Agent → AX",
+  "user_focus": [
+    "재무·회계·결산·경영지원",
+    "SAP·전표·KPI·보고서",
+    "AI Agent·MCP·RAG·LLM",
+    "기업 AX·업무혁신"
+  ],
+  "concepts": [
+    {"id": "m1-llm-basics", "month": 1, "title": "LLM이란 무엇인가", "keywords": ["LLM", "ChatGPT", "생성형 AI"]},
+    {"id": "m1-prompt-basics", "month": 1, "title": "프롬프트 엔지니어링 입문", "keywords": ["Prompt", "질문법", "Before/After"]},
+    {"id": "m1-token-cost", "month": 1, "title": "토큰·비용·속도 한 줄 이해", "keywords": ["토큰", "API 비용", "모델 선택"]},
+    {"id": "m1-api-basics", "month": 1, "title": "API란 — AI를 프로그램처럼 부르기", "keywords": ["API", "REST", "연동"]},
+    {"id": "m1-embedding", "month": 1, "title": "Embedding — 글을 숫자로 바꾸면", "keywords": ["Embedding", "벡터", "유사도"]},
+    {"id": "m1-vector-db", "month": 1, "title": "Vector DB가 필요한 이유", "keywords": ["Vector DB", "Pinecone", "검색"]},
+    {"id": "m1-hallucination", "month": 1, "title": "AI 환각과 검증 습관", "keywords": ["환각", "팩트체크", "출처"]},
+    {"id": "m1-ai-security", "month": 1, "title": "회사 데이터 AI에 넣을 때", "keywords": ["보안", "개인정보", "컴플라이언스"]},
+    {"id": "m1-chatgpt-vs-enterprise", "month": 1, "title": "ChatGPT vs 사내 AI", "keywords": ["Enterprise AI", "Copilot", "도입"]},
+    {"id": "m1-ai-automation-intro", "month": 1, "title": "AI Automation이란", "keywords": ["자동화", "워크플로", "n8n"]},
+    {"id": "m1-finance-ai-intro", "month": 1, "title": "재무팀 AI — 어디부터?", "keywords": ["재무", "결산", "보고서"]},
+    {"id": "m1-sap-ai-intro", "month": 1, "title": "SAP + AI, 현실적인 첫 단계", "keywords": ["SAP", "전표", "데이터"]},
+
+    {"id": "m2-rag-basics", "month": 2, "title": "RAG — 문서 보고 답하기", "keywords": ["RAG", "검색증강", "사내 문서"]},
+    {"id": "m2-rag-finance", "month": 2, "title": "RAG in 재무·회계", "keywords": ["회계기준", "FAQ", "규정 검색"]},
+    {"id": "m2-chunking", "month": 2, "title": "문서 쪼개기(Chunking) 실무", "keywords": ["Chunk", "PDF", "품질"]},
+    {"id": "m2-agent-basics", "month": 2, "title": "AI Agent란", "keywords": ["Agent", "자율", "도구 사용"]},
+    {"id": "m2-tool-calling", "month": 2, "title": "Tool Calling — AI가 도구를 쓸 때", "keywords": ["Function calling", "API 호출"]},
+    {"id": "m2-workflow", "month": 2, "title": "Agent Workflow 설계", "keywords": ["워크플로", "단계", "승인"]},
+    {"id": "m2-agent-finance", "month": 2, "title": "결산·KPI Agent 아이디어", "keywords": ["KPI", "결산", "모니터링"]},
+    {"id": "m2-agent-sap", "month": 2, "title": "SAP 조회·분석 Agent", "keywords": ["SAP", "전표조회", "리포트"]},
+    {"id": "m2-prompt-advanced", "month": 2, "title": "실무 프롬프트 패턴", "keywords": ["Few-shot", "역할", "템플릿"]},
+    {"id": "m2-eval-quality", "month": 2, "title": "AI 답변 품질 평가", "keywords": ["평가", "테스트", "ROI"]},
+    {"id": "m2-no-code-auto", "month": 2, "title": "노코드 AI 자동화", "keywords": ["Zapier", "Make", "Power Automate"]},
+    {"id": "m2-meeting-ai", "month": 2, "title": "회의록·Confluence AI", "keywords": ["회의록", "Confluence", "검색"]},
+
+    {"id": "m3-mcp-basics", "month": 3, "title": "MCP란 — AI 연결 표준", "keywords": ["MCP", "Model Context Protocol", "연동"]},
+    {"id": "m3-mcp-vs-api", "month": 3, "title": "MCP vs API — 언제 뭘 쓰나", "keywords": ["MCP", "API", "비교"]},
+    {"id": "m3-mcp-enterprise", "month": 3, "title": "MCP 기업 도입 시나리오", "keywords": ["SAP", "Slack", "도구 연결"]},
+    {"id": "m3-multi-agent", "month": 3, "title": "Multi-Agent — 여러 AI가 협업", "keywords": ["Multi-Agent", "오케스트레이션"]},
+    {"id": "m3-agent-ax", "month": 3, "title": "AX(AI Transformation)란", "keywords": ["AX", "디지털전환", "로드맵"]},
+    {"id": "m3-finance-ax", "month": 3, "title": "재무 AX — 3가지 Quick Win", "keywords": ["재무", "Quick Win", "ROI"]},
+    {"id": "m3-sap-ax", "month": 3, "title": "SAP 데이터 + Agent 전략", "keywords": ["SAP", "데이터레이크", "Agent"]},
+    {"id": "m3-governance", "month": 3, "title": "AI 거버넌스·승인 프로세스", "keywords": ["거버넌스", "승인", "리스크"]},
+    {"id": "m3-vendor-select", "month": 3, "title": "AI 벤더·솔루션 고르기", "keywords": ["PoC", "데모", "체크리스트"]},
+    {"id": "m3-team-adoption", "month": 3, "title": "팀 AI 확산 — 저항 줄이기", "keywords": ["교육", "가이드", "변화관리"]},
+    {"id": "m3-future-agent", "month": 3, "title": "6개월 뒤 Agent 조직", "keywords": ["미래", "역할", "스킬"]},
+    {"id": "m3-daily-coach-wrap", "month": 3, "title": "3개월 학습 정리 + 다음 스텝", "keywords": ["복습", "로드맵", "실행"]}
+  ]
+}

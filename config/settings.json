@@ -2,19 +2,19 @@
   "loop_interval_hours": 24,
   "daily_time": "07:30",
   "delivery_channel": "telegram",
-  "delivery_channel_note": "telegram | kakao | both (GitHub Actions: telegram 권장)",
-  "timezone_note": "PC 로컬 시간 기준 (한국이면 KST 07:30)",
+  "delivery_channel_note": "telegram | kakao | both",
+  "timezone_note": "GitHub Actions cron — KST 07:30",
   "briefing_language": "ko",
-  "max_kakao_chars_per_message": 900,
-  "topics_file": "data/topics.json",
+  "mode": "daily_coach",
+  "curriculum_file": "data/curriculum.json",
   "state_file": "data/state.json",
   "briefings_dir": "briefings",
   "content_plan": {
-    "format": "숏츠형 3분 (훅·공감·설명·업무사례·오늘할것)",
-    "rotation": "topics.json 순환",
-    "tone": "친구가 카톡으로 설명, 보고서/라벨체 금지",
-    "length": "본문 500~700자, 카카오 250~450자",
-    "must_have": ["업무 적용 사례", "일상 비유", "오늘 해볼 것 1가지"],
-    "guide": "prompts/clip_format.md"
+    "engine": "gemini",
+    "model_default": "gemini-2.0-flash",
+    "format": "4섹션 (뉴스2 + 개념 + AX실무 + Agent아이디어)",
+    "length": "900~1200자",
+    "prompt": "prompts/daily_coach.md",
+    "news": "RSS 자동 수집 → Gemini 요약"
   }
 }

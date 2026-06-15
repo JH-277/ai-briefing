@@ -81,7 +81,11 @@ def main() -> None:
         body = args.text or ""
 
     header = f"📌 {args.title}\n\n"
-    send_message(token, chat_id, header + body)
+    if body.startswith("📌"):
+        message = body
+    else:
+        message = header + body
+    send_message(token, chat_id, message)
     print("Telegram 전송 완료")
 
 
