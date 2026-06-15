@@ -1,0 +1,65 @@
+{
+  "note": "다음 사이클·교체용 후보. 확정 시 topics.json + content/library/{id}.md 추가",
+  "candidates": [
+    {
+      "id": "meeting-fine-tuning",
+      "title": "회의에서 '파인튜닝' 나왔을 때",
+      "hook": "RAG면 될 것 같은데 파인튜닝 얘기가 나올 때"
+    },
+    {
+      "id": "slack-ai-bot",
+      "title": "슬랙에 AI 봇 붙이자는데",
+      "hook": "팀 채널 자동 요약·FAQ"
+    },
+    {
+      "id": "excel-ai",
+      "title": "엑셀 대신 AI한테 시키면?",
+      "hook": "표 정리·피벗·반복 보고"
+    },
+    {
+      "id": "meeting-token-cost",
+      "title": "'토큰 비용'만 오갔을 때",
+      "hook": "AI 예산·과금 회의"
+    },
+    {
+      "id": "copilot-vs-cursor",
+      "title": "Copilot이랑 Cursor 뭐가 달라?",
+      "hook": "팀 도구 선택"
+    },
+    {
+      "id": "ai-meeting-minutes",
+      "title": "AI 회의록, 믿어도 될까?",
+      "hook": "액션 아이템·발언 누락"
+    },
+    {
+      "id": "prompt-leak",
+      "title": "프롬프트에 뭐 넣으면 안 돼?",
+      "hook": "고객명·단가 실수"
+    },
+    {
+      "id": "ai-onboarding",
+      "title": "신입한테 AI 뭐부터 가르칠까",
+      "hook": "팀 AI 가이드"
+    },
+    {
+      "id": "vendor-demo-trap",
+      "title": "AI 벤더 데모, 속지 않으려면",
+      "hook": "멋진 데모 vs 우리 데이터"
+    },
+    {
+      "id": "llm-privacy-kr",
+      "title": "한국에서 AI 쓸 때 개인정보 한 줄",
+      "hook": "법무·컴플라이언스"
+    },
+    {
+      "id": "ai-weekly-report",
+      "title": "주간 보고 AI로 줄이기",
+      "hook": "임원용 3줄·숫자만"
+    },
+    {
+      "id": "when-not-use-ai",
+      "title": "AI 쓰지 말아야 할 때",
+      "hook": "최종 결정·법적 판단"
+    }
+  ]
+}

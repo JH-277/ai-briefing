@@ -1,0 +1,7 @@
+{
+  "rest_api_key": "YOUR_KAKAO_REST_API_KEY",
+  "client_secret": "",
+  "redirect_uri": "http://localhost:8080/oauth",
+  "access_token": "",
+  "refresh_token": ""
+}

@@ -1,0 +1,38 @@
+GitHub에 나머지 파일 올리기 (중요!)
+
+지금 GitHub 저장소에는 .github 폴더만 있고
+scripts, content, data 등이 없어서 Actions가 실패했습니다.
+
+========================================
+1. 이 폴더 열기
+========================================
+C:\Users\pyww2\Desktop\GitHub에-나머지-업로드
+
+(.github 폴더는 제외됨 — 이미 GitHub에 있음)
+
+========================================
+2. Ctrl + A 전체 선택 → 드래그
+========================================
+https://github.com/JH-277/ai-briefing
+
+Code 탭 → Add file → Upload files
+→ 점선 박스에 드래그 → Commit changes
+
+========================================
+3. 목록에 이런 게 보여야 함
+========================================
+scripts/run_scheduled_briefing.py
+content/library/meeting-rag.md
+data/topics.json
+config/settings.json
+requirements.txt
+README.md
+
+========================================
+4. 다시 테스트
+========================================
+Actions → Daily AI Briefing → Run workflow
+
+1~2분 후 텔레그램에 브리핑 도착!
+
+주의: config/kakao.json, telegram.json 은 이 폴더에 없음 (비밀키)

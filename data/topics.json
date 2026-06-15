@@ -1,0 +1,54 @@
+{
+  "topics": [
+    {
+      "id": "meeting-rag",
+      "title": "회의에서 'RAG'만 오갔을 때",
+      "prompt_hint": "RAG를 회의·업무 맥락에서 쉽게, 사내 문서 AI 예시"
+    },
+    {
+      "id": "chatgpt-vs-work",
+      "title": "ChatGPT랑 '사내 AI'는 다른 거야?",
+      "prompt_hint": "개인용 AI vs 회사 도입 AI 차이, 실무 선택"
+    },
+    {
+      "id": "ai-hallucination",
+      "title": "AI가 지어낸 답, 어떻게 걸러?",
+      "prompt_hint": "환각, 검증 습관, 업무에서 안전하게 쓰는 법"
+    },
+    {
+      "id": "prompt-one-minute",
+      "title": "1분 만에 AI 질문 품질 올리기",
+      "prompt_hint": "비전공자용 프롬프트, Before/After 예시"
+    },
+    {
+      "id": "cursor-for-nondev",
+      "title": "비개발자가 Cursor를 쓰는 이유",
+      "prompt_hint": "코딩 도구가 아닌 'AI 비서+자동화' 관점"
+    },
+    {
+      "id": "api-mcp-daily",
+      "title": "API·MCP, 뉴스만 보면 헷갈릴 때",
+      "prompt_hint": "일상 비유, 회사에서 왜 들리는지"
+    },
+    {
+      "id": "automation-no-code",
+      "title": "코드 없이 자동화, 어디까지?",
+      "prompt_hint": "매크로, 스케줄, 카톡 브리핑 같은 사례"
+    },
+    {
+      "id": "ai-doc-safe",
+      "title": "회사 문서 AI에 넣어도 될까?",
+      "prompt_hint": "보안·개인정보, 실무 체크 3가지"
+    },
+    {
+      "id": "agent-hype",
+      "title": "AI Agent, 지금 당장 필요해?",
+      "prompt_hint": "챗봇 vs 에이전트, 도입 타이밍"
+    },
+    {
+      "id": "morning-ai-routine",
+      "title": "출근 전 5분 AI 루틴",
+      "prompt_hint": "비전공자 일상 업무에 바로 쓰는 습관"
+    }
+  ]
+}
