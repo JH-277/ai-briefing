@@ -1,4 +1,4 @@
-"""Gemini API로 AI Daily Coach 브리핑 생성."""
+"""Gemini API로 AI Daily Coach 브리핑 생성 (실패 시 오프라인 fallback)."""
 
 from __future__ import annotations
 
@@ -15,20 +15,19 @@ import requests
 
 ROOT = Path(__file__).resolve().parent.parent
 PROMPT_PATH = ROOT / "prompts" / "daily_coach.md"
+LIBRARY = ROOT / "content" / "library"
 BRIEFINGS = ROOT / "briefings"
 CONFIG = ROOT / "config" / "gemini.json"
 ENV = {**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"}
 
-# 무료 한도가 넉넉한 모델부터 시도 (429 시 다음 모델)
 MODEL_FALLBACKS = [
     "gemini-2.0-flash-lite",
     "gemini-1.5-flash",
     "gemini-2.0-flash",
-    "gemini-1.5-flash-8b",
 ]
 
 
-def load_gemini_config() -> dict:
+def load_gemini_config() -> dict | None:
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     model = os.environ.get("GEMINI_MODEL", "").strip()
     if CONFIG.exists():
@@ -36,10 +35,7 @@ def load_gemini_config() -> dict:
         key = key or cfg.get("api_key", "").strip()
         model = model or cfg.get("model", "").strip()
     if not key or key == "YOUR_GEMINI_API_KEY":
-        raise SystemExit(
-            "GEMINI_API_KEY 필요 — Google AI Studio에서 발급 후 "
-            "config/gemini.json 또는 GitHub Secrets에 등록"
-        )
+        return None
     preferred = model or MODEL_FALLBACKS[0]
     models = [preferred] + [m for m in MODEL_FALLBACKS if m != preferred]
     return {"api_key": key, "models": models}
@@ -108,38 +104,85 @@ def call_gemini_once(api_key: str, model: str, prompt: str) -> tuple[str, dict]:
     )
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": 0.7,
-            "maxOutputTokens": 2048,
-        },
+        "generationConfig": {"temperature": 0.7, "maxOutputTokens": 2048},
     }
     r = requests.post(url, json=body, timeout=120)
     data = r.json()
     if not r.ok:
-        return "", {"status": r.status_code, "data": data, "quota": _is_quota_error(r.status_code, data)}
+        return "", {
+            "status": r.status_code,
+            "data": data,
+            "quota": _is_quota_error(r.status_code, data),
+        }
     return _parse_gemini_response(data), {"status": 200, "data": data, "quota": False}
 
 
 def call_gemini_with_fallback(api_key: str, models: list[str], prompt: str) -> tuple[str, str]:
     errors: list[str] = []
     for model in models:
-        for attempt in range(2):
-            text, info = call_gemini_once(api_key, model, prompt)
-            if text:
-                print(f"Gemini 성공: model={model}", file=sys.stderr)
-                return text, model
-            err = info["data"]
-            msg = err.get("error", {}).get("message", str(err))[:200]
-            errors.append(f"{model}: {msg}")
-            if info.get("quota") and attempt == 0:
-                print(f"Gemini quota/retry: {model}, 35s 대기...", file=sys.stderr)
-                time.sleep(35)
-                continue
-            break
-    raise RuntimeError(
-        "Gemini API 전 모델 실패 (429=무료 한도). 시도: "
-        + " | ".join(errors[-3:])
-    )
+        text, info = call_gemini_once(api_key, model, prompt)
+        if text:
+            print(f"Gemini 성공: model={model}", file=sys.stderr)
+            return text, model
+        msg = info["data"].get("error", {}).get("message", str(info["data"]))[:160]
+        errors.append(f"{model}: {msg}")
+        if info.get("quota"):
+            print(f"Gemini quota: {model}, 다음 모델 시도...", file=sys.stderr)
+    raise RuntimeError("Gemini 전 모델 실패: " + " | ".join(errors))
+
+
+def _library_excerpt(concept_id: str) -> str:
+    legacy_map = {
+        "m1-llm-basics": "chatgpt-vs-work",
+        "m2-rag-basics": "meeting-rag",
+        "m2-agent-basics": "agent-hype",
+        "m3-mcp-basics": "api-mcp-daily",
+    }
+    path = LIBRARY / f"{legacy_map.get(concept_id, '')}.md"
+    if not path.exists():
+        return ""
+    raw = path.read_text(encoding="utf-8")
+    marker = "## 카카오 요약"
+    if marker in raw:
+        return raw.split(marker, 1)[1].strip()[:400]
+    return raw[:400]
+
+
+def generate_offline_briefing(concept: dict, news_items: list[dict], today: str) -> str:
+    title = concept.get("title", "")
+    keywords = ", ".join(concept.get("keywords", []))
+    month = concept.get("month", 1)
+    cycle = concept.get("cycle", 1)
+    concept_id = concept.get("id", "")
+
+    news_lines = []
+    for i, item in enumerate(news_items[:2], 1):
+        news_lines.append(f"{i}. {item.get('title', '')}\n   {item.get('link', '')}")
+    news_sec = "\n".join(news_lines) if news_lines else "오늘 RSS 수집 없음 — 개념·실무에 집중"
+
+    extra = _library_excerpt(concept_id)
+    extra_block = f"\n\n💡 참고:\n{extra}" if extra else ""
+
+    return f"""📌 AI Daily Coach · {today}
+
+⚠️ Gemini API 무료 한도 초과 → 오늘은 간이 브리핑입니다. (한도 복구 시 AI 풀 버전 자동 재개)
+
+🔹 오늘의 AI 뉴스 (2건)
+{news_sec}
+
+🔹 오늘의 AI 개념: {title}
+• 키워드: {keywords}
+• {month}개월차 · {cycle}회독
+• 학습 경로: {concept.get('learning_path', '')}
+• 오늘은 API 한도로 AI 상세 설명 대신 커리큘럼 주제를 안내합니다.{extra_block}
+
+🔹 AX 실무 활용
+재무·회계·SAP 맥락에서 '{title}'은 FAQ 검색, 결산 체크리스트, 보고서 초안에 연결해 보세요.
+
+🔹 오늘의 Agent 아이디어
+'{title}' Agent — SAP/전표·규정 PDF를 검색해 3줄 요약 후 이메일/Teams로 보내는 1단계 자동화부터."""
+
+
 
 
 def generate_briefing(today: str | None = None) -> dict:
@@ -149,8 +192,19 @@ def generate_briefing(today: str | None = None) -> dict:
     news_items = news_payload.get("items", [])
 
     cfg = load_gemini_config()
-    prompt = build_prompt(concept, news_items, today)
-    body, model_used = call_gemini_with_fallback(cfg["api_key"], cfg["models"], prompt)
+    model_used = "offline-fallback"
+    body = ""
+
+    if cfg:
+        prompt = build_prompt(concept, news_items, today)
+        try:
+            body, model_used = call_gemini_with_fallback(cfg["api_key"], cfg["models"], prompt)
+        except RuntimeError as exc:
+            print(f"Gemini 실패 → offline fallback: {exc}", file=sys.stderr)
+            body = generate_offline_briefing(concept, news_items, today)
+    else:
+        print("GEMINI_API_KEY 없음 → offline fallback", file=sys.stderr)
+        body = generate_offline_briefing(concept, news_items, today)
 
     BRIEFINGS.mkdir(parents=True, exist_ok=True)
     concept_id = concept["id"]
@@ -165,6 +219,7 @@ def generate_briefing(today: str | None = None) -> dict:
         "archive": str(archive.relative_to(ROOT)),
         "news_count": len(news_items),
         "model": model_used,
+        "fallback": model_used == "offline-fallback",
     }
 
 
