@@ -1,12 +1,13 @@
 {
   "mode": "daily_coach",
   "curriculum_version": 1,
-  "next_index": 2,
+  "next_index": 3,
   "cycle": 1,
   "completed_concept_ids": [
     "m1-llm-basics",
-    "m1-prompt-basics"
+    "m1-prompt-basics",
+    "m1-token-cost"
   ],
-  "last_run_at": "2026-06-15T17:38:14.738075+00:00",
-  "last_concept_id": "m1-prompt-basics"
+  "last_run_at": "2026-06-16T16:12:53.951276+00:00",
+  "last_concept_id": "m1-token-cost"
 }
