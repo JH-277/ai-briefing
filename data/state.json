@@ -1,9 +1,10 @@
 {
   "mode": "daily_coach",
   "curriculum_version": 1,
-  "next_index": 7,
+  "next_index": 8,
   "cycle": 1,
   "completed_concept_ids": [
+    "m1-ai-security",
     "m1-api-basics",
     "m1-embedding",
     "m1-hallucination",
@@ -12,6 +13,6 @@
     "m1-token-cost",
     "m1-vector-db"
   ],
-  "last_run_at": "2026-06-20T10:12:42.854642+00:00",
-  "last_concept_id": "m1-hallucination"
+  "last_run_at": "2026-06-21T05:11:53.411283+00:00",
+  "last_concept_id": "m1-ai-security"
 }
