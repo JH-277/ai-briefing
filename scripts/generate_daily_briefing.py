@@ -67,13 +67,23 @@ def format_news_block(items: list[dict]) -> str:
     if not items:
         return "(수집된 RSS 없음)"
     lines = []
-    for i, item in enumerate(items[:6], 1):
+    for i, item in enumerate(items[:8], 1):
+        score = item.get("relevance_score")
+        tags = ", ".join(item.get("relevance_tags") or [])
+        score_hint = f" (관련도 {score})" if score is not None else ""
+        tag_hint = f" — {tags}" if tags else ""
         lines.append(
-            f"{i}. [{item.get('source')}] {item.get('title')}\n"
+            f"{i}. [{item.get('source')}]{score_hint} {item.get('title')}{tag_hint}\n"
             f"   link: {item.get('link')}\n"
             f"   snippet: {item.get('snippet', '')}"
         )
     return "\n".join(lines)
+
+
+def format_user_focus_block(user_focus: list[str]) -> str:
+    if not user_focus:
+        return "- AX, AI Agent, 거버넌스, LLM/RAG/MCP, 비전문가 필수 트렌드"
+    return "\n".join(f"- {item}" for item in user_focus)
 
 
 def build_prompt(concept: dict, news_items: list[dict], today: str) -> str:
@@ -86,6 +96,7 @@ def build_prompt(concept: dict, news_items: list[dict], today: str) -> str:
         concept_title=concept.get("title", ""),
         keywords=keywords,
         learning_path=concept.get("learning_path", ""),
+        user_focus_block=format_user_focus_block(concept.get("user_focus", [])),
         news_block=format_news_block(news_items),
     )
 
@@ -224,7 +235,19 @@ def generate_offline_briefing(concept: dict, news_items: list[dict], today: str)
 def generate_briefing(today: str | None = None) -> dict:
     today = today or today_kst()
     concept = json.loads(run_script("curriculum_manager.py", "next"))
-    news_payload = json.loads(run_script("fetch_ai_news.py", "--limit", "6"))
+    concept_kw = ",".join(concept.get("keywords", []))
+    user_focus_json = json.dumps(concept.get("user_focus", []), ensure_ascii=False)
+    news_payload = json.loads(
+        run_script(
+            "fetch_ai_news.py",
+            "--limit",
+            "8",
+            "--concept-keywords",
+            concept_kw,
+            "--user-focus",
+            user_focus_json,
+        )
+    )
     news_items = news_payload.get("items", [])
 
     prompt = build_prompt(concept, news_items, today)
