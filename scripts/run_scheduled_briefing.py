@@ -1,4 +1,4 @@
-"""Gemini 생성 → Telegram/Kakao 전송 → 커리큘럼 진도 갱신."""
+"""Gemini/Groq 생성 → Telegram/Kakao 전송 → 커리큘럼 진도 갱신."""
 
 from __future__ import annotations
 
@@ -6,11 +6,29 @@ import json
 import os
 import subprocess
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SETTINGS = ROOT / "config" / "settings.json"
+STATE_PATH = ROOT / "data" / "state.json"
+KST = timezone(timedelta(hours=9))
 ENV = {**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"}
+
+
+def today_kst() -> str:
+    return datetime.now(KST).date().isoformat()
+
+
+def already_sent_today() -> bool:
+    if not STATE_PATH.exists():
+        return False
+    state = json.loads(STATE_PATH.read_text(encoding="utf-8"))
+    last = state.get("last_run_at")
+    if not last:
+        return False
+    last_dt = datetime.fromisoformat(last.replace("Z", "+00:00"))
+    return last_dt.astimezone(KST).date().isoformat() == today_kst()
 
 
 def run_script(name: str, *args: str) -> str:
@@ -57,6 +75,15 @@ def send_briefing(archive_rel: str, title: str, channel: str) -> None:
 
 
 def main() -> None:
+    if already_sent_today():
+        print(
+            json.dumps(
+                {"ok": True, "skipped": True, "reason": "already_sent_today_kst"},
+                ensure_ascii=False,
+            )
+        )
+        return
+
     channel = delivery_channel()
     meta = json.loads(run_script("generate_daily_briefing.py"))
     concept_id = meta["concept_id"]
@@ -75,6 +102,7 @@ def main() -> None:
                 "title": title,
                 "channel": channel,
                 "archive": archive,
+                "ai_provider": meta.get("ai_provider"),
             },
             ensure_ascii=False,
         )
