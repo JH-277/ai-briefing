@@ -1,9 +1,10 @@
 {
   "mode": "daily_coach",
   "curriculum_version": 1,
-  "next_index": 9,
+  "next_index": 10,
   "cycle": 1,
   "completed_concept_ids": [
+    "m1-ai-automation-intro",
     "m1-ai-security",
     "m1-api-basics",
     "m1-chatgpt-vs-enterprise",
@@ -14,6 +15,6 @@
     "m1-token-cost",
     "m1-vector-db"
   ],
-  "last_run_at": "2026-06-22T16:18:46.772719+00:00",
-  "last_concept_id": "m1-chatgpt-vs-enterprise"
+  "last_run_at": "2026-06-24T10:29:57.399399+00:00",
+  "last_concept_id": "m1-ai-automation-intro"
 }
