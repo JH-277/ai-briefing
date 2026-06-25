@@ -1,7 +1,7 @@
 {
   "mode": "daily_coach",
   "curriculum_version": 1,
-  "next_index": 10,
+  "next_index": 11,
   "cycle": 1,
   "completed_concept_ids": [
     "m1-ai-automation-intro",
@@ -9,12 +9,13 @@
     "m1-api-basics",
     "m1-chatgpt-vs-enterprise",
     "m1-embedding",
+    "m1-finance-ai-intro",
     "m1-hallucination",
     "m1-llm-basics",
     "m1-prompt-basics",
     "m1-token-cost",
     "m1-vector-db"
   ],
-  "last_run_at": "2026-06-24T10:29:57.399399+00:00",
-  "last_concept_id": "m1-ai-automation-intro"
+  "last_run_at": "2026-06-25T10:22:07.913074+00:00",
+  "last_concept_id": "m1-finance-ai-intro"
 }
