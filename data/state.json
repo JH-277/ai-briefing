@@ -1,7 +1,7 @@
 {
   "mode": "daily_coach",
   "curriculum_version": 1,
-  "next_index": 11,
+  "next_index": 12,
   "cycle": 1,
   "completed_concept_ids": [
     "m1-ai-automation-intro",
@@ -13,9 +13,10 @@
     "m1-hallucination",
     "m1-llm-basics",
     "m1-prompt-basics",
+    "m1-sap-ai-intro",
     "m1-token-cost",
     "m1-vector-db"
   ],
-  "last_run_at": "2026-06-25T10:22:07.913074+00:00",
-  "last_concept_id": "m1-finance-ai-intro"
+  "last_run_at": "2026-06-25T23:52:32.000421+00:00",
+  "last_concept_id": "m1-sap-ai-intro"
 }
