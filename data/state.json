@@ -1,7 +1,7 @@
 {
   "mode": "daily_coach",
   "curriculum_version": 1,
-  "next_index": 13,
+  "next_index": 14,
   "cycle": 1,
   "completed_concept_ids": [
     "m1-ai-automation-intro",
@@ -16,8 +16,9 @@
     "m1-sap-ai-intro",
     "m1-token-cost",
     "m1-vector-db",
-    "m2-rag-basics"
+    "m2-rag-basics",
+    "m2-rag-finance"
   ],
-  "last_run_at": "2026-06-26T23:42:50.009769+00:00",
-  "last_concept_id": "m2-rag-basics"
+  "last_run_at": "2026-06-27T23:34:08.963186+00:00",
+  "last_concept_id": "m2-rag-finance"
 }
