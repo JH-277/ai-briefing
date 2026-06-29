@@ -1,0 +1,10 @@
+# 실제 키가 든 config는 전부 제외, example(플레이스홀더)만 추적
+config/*.json
+!config/*.example.json
+
+briefings/*.md
+!briefings/.gitkeep
+__pycache__/
+*.pyc
+.env
+.venv/
