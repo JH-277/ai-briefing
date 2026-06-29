@@ -2,8 +2,12 @@ name: Daily AI Briefing
 
 on:
   schedule:
-    # 07:30 KST = 22:30 UTC (전날)
-    - cron: "30 22 * * *"
+    # 아침에 여러 번 시도 (GitHub 지연 대비). 하루 1통만 전송.
+    - cron: "30 22 * * *"   # 07:30 KST
+    - cron: "0 23 * * *"    # 08:00 KST
+    - cron: "30 23 * * *"   # 08:30 KST
+    - cron: "0 0 * * *"     # 09:00 KST
+    - cron: "0 1 * * *"     # 10:00 KST
   workflow_dispatch:
 
 permissions:
@@ -22,15 +26,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Prepare Telegram/Kakao config from secrets
+      - name: Prepare Telegram config from secrets
         env:
           BRIEFING_CHANNEL: ${{ secrets.BRIEFING_CHANNEL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
-          KAKAO_REFRESH_TOKEN: ${{ secrets.KAKAO_REFRESH_TOKEN }}
-          KAKAO_ACCESS_TOKEN: ${{ secrets.KAKAO_ACCESS_TOKEN }}
-          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
         run: python scripts/prepare_github_env.py
 
       - name: Generate and send daily briefing
