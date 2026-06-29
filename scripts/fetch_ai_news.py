@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -63,7 +64,6 @@ DEFAULT_USER_FOCUS = [
 
 def strip_html(text: str) -> str:
     return re.sub(r"<[^>]+>", "", text or "").strip()
-
 
 
 def parse_atom(xml_text: str, source: str) -> list[dict]:
@@ -253,7 +253,7 @@ def fetch_news(
             )
             r.raise_for_status()
         except requests.RequestException as exc:
-            print(f"RSS skip {source}: {exc}")
+            print(f"RSS skip {source}: {exc}", file=sys.stderr)
             continue
 
         for item in parse_feed(r.text, source):
@@ -274,8 +274,6 @@ def fetch_news(
 
 
 def main() -> None:
-    import sys
-
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except AttributeError:
